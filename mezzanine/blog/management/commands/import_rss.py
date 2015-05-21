@@ -1,9 +1,14 @@
+from __future__ import unicode_literals
 
 from datetime import timedelta
 from optparse import make_option
 from time import timezone
-from urllib import urlopen
-from urlparse import urljoin
+try:
+    from urllib.request import urlopen
+    from urllib.parse import urljoin
+except ImportError:
+    from urllib import urlopen
+    from urlparse import urljoin
 
 from django.core.management.base import CommandError
 
@@ -48,7 +53,7 @@ class Command(BaseImporterCommand):
                 raise CommandError("BeautifulSoup package is required")
             for l in BeautifulSoup(urlopen(page_url).read()).findAll("link"):
                 if ("application/rss" in l.get("type", "") or
-                    "application/atom" in l.get("type", "")):
+                        "application/atom" in l.get("type", "")):
                     rss_url = urljoin(page_url, l["href"])
                     break
             else:
